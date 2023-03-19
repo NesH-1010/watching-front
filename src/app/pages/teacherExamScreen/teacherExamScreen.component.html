@@ -1,0 +1,174 @@
+<div class="row">
+  <div class="col-md-12">
+      <div class="card">
+          <div class="card-header">
+              <div class="card-title">
+                    <div class="row">
+                        <div class="col-4">考場名稱: {{examData.examName}}</div>
+                        <div class="col-5">考試時間: {{examData.examStartTime}}~{{examData.examEndTime}}</div>
+                        <div class="col-3">應考人數: {{examData.examCount}}</div>
+                    </div>
+                </div>
+
+              <div class="float-md-right">
+                  <button class="btn btn-outline-primary" data-toggle="modal" data-target="#stundentList">學生名單</button>
+                  <button class="btn btn-outline-primary" data-toggle="modal" data-target="#extendModal">延長考試</button>
+                  <button class="btn btn-outline-primary" data-toggle="modal" data-target="#closeModal">關閉考場</button>
+              </div>
+          </div>
+          <div class="card-body">
+              <div class="table-responsive">
+                  <table class="table">
+                      <thead class="text-primary">
+                          <th >學生學號</th>
+                          <th >學生姓名</th>
+                          <th >作弊時間</th>
+                          <th >作弊機率</th>
+                          <th >查看照片</th>
+                      </thead>
+                      <tbody>
+                          <tr *ngFor="let rows of LogList; let i = index">
+                              <td>{{rows.studentId}}</td>
+                              <td>{{rows.studentName}}</td>
+                              <td>{{rows.time | date:"HH:mm:ss"}}</td>
+                              <td>{{rows.probability}}</td>
+                              <td>
+                                  <button class="btn btn-primary btn-fab btn-icon btn-round" (click)="showModal(i)">
+                                      <i class="fa fa-eye"></i>
+                                  </button>
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- img Modal -->
+<div class="modal fade" id="showImg" tabindex="-1" role="dialog" aria-labelledby="showImgTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+
+          <div class="modal-body">
+              <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel" data-interval="2000">
+                  <ol class="carousel-indicators">
+                      <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+                      <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
+                      <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
+                  </ol>
+
+                  <div class="carousel-inner">
+                      <div class="carousel-item active" *ngFor="let rows of imgArr;let isFirst = first" [class.active]="isFirst">
+                          <img
+                              src={{rows}}
+                              class="d-block w-100"
+                              alt="..."
+                          />
+                      </div>
+                  </div>
+                  <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="sr-only">Previous</span>
+                  </a>
+                  <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="sr-only">Next</span>
+                  </a>
+              </div>
+
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+          </div>
+
+      </div>
+  </div>
+</div>
+
+<!-- closeExam  Modal -->
+<div class="modal fade" id="closeModal" tabindex="-1" role="dialog" aria-labelledby="closeModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">結束考試</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              確定要現在就結束考試嗎?
+          </div>
+          <div class="modal-footer">
+              <button type="submit" (click)="closeExam()" class="btn btn-primary">確定結束</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- extendExam  Modal -->
+<div class="modal fade" id="extendModal" tabindex="-1" role="dialog" aria-labelledby="extendModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">延長考試</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <form [formGroup]="extendExamForm" (ngSubmit)="extendExam()">
+              <div class="modal-body">
+                  <div class="position-relative row form-group">
+                      <label for="studentName" class="col-sm-12 col-form-label">延長考試結束時間</label>
+                      <div class="col-sm-6"><input formControlName="examEndTime" id="examEndTime" placeholder="請選擇結束時間" type="time" class="form-control" /></div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary">延長考試</button>
+              </div>
+          </form>
+      </div>
+  </div>
+</div>
+
+<!-- stundentList  Modal -->
+<div class="modal fade" id="stundentList" tabindex="-1" role="dialog" aria-labelledby="stundentListLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="height: 500px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">學生名單</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="text-primary">
+                            <th >學生IP</th>
+                            <th >學生學號</th>
+                            <th >學生姓名</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let rows of studentList">
+                                <td>{{rows.studentIP}}</td>
+                                <td>{{rows.studentId}}</td>
+                                <td>{{rows.studentName}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" data-dismiss="modal" aria-label="Close" class="btn btn-primary">關閉</button>
+            </div>
+        </div>
+    </div>
+  </div>
